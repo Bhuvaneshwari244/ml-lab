@@ -1,0 +1,48 @@
+5.Implementation of Decision tree using sklearn and its parameter tuning
+
+import numpy as np
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn import metrics
+import matplotlib.pyplot as plt
+from sklearn import tree
+# Load the Iris dataset
+iris = load_iris()
+X = iris.data # Features
+y = iris.target # Target
+# Description of Iris Dataset
+print(iris.DESCR)
+# Splitting the dataset into training and testing sets (80% train, 20% test)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Creating the Decision Tree model with initial parameters
+model = DecisionTreeClassifier(criterion='entropy', random_state=42)
+# Training the model
+model.fit(X_train, y_train)
+# Predicting the target for the test data
+y_pred = model.predict(X_test)
+# Evaluating the model's accuracy
+accuracy = metrics.accuracy_score(y_test, y_pred)
+print("Accuracy before tuning:", accuracy)
+# Parameter tuning using GridSearchCV
+param_grid = {
+'criterion': ['gini', 'entropy'],
+'max_depth': [3, 5, 7, None],
+'min_samples_split': [2, 5, 10]
+}	
+grid_search = GridSearchCV(DecisionTreeClassifier(random_state=42), param_grid, cv=5)
+grid_search.fit(X_train, y_train)
+# Best parameters and accuracy after tuning
+best_model = grid_search.best_estimator_
+print("Best Parameters:", grid_search.best_params_)
+print("Best Model Accuracy after tuning:", grid_search.best_score_)
+# Final prediction using the best model
+y_pred_best = best_model.predict(X_test)
+final_accuracy = metrics.accuracy_score(y_test, y_pred_best)
+print("Final Accuracy with tuned model:", final_accuracy)
+# Visualizing the best Decision Tree
+plt.figure(figsize=(12, 8))
+tree.plot_tree(best_model, filled=True, feature_names=iris.feature_names, class_names=iris.target_names, rounded=True)
+plt.title("Tuned Decision Tree")
+plt.show()

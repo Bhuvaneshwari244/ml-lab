@@ -1,0 +1,44 @@
+8. Implementation of K-Means Clustering Using sklearn
+
+# Required Libraries 
+import numpy as np 
+import matplotlib.pyplot as plt 
+from sklearn.cluster import KMeans 
+from sklearn.datasets import load_iris
+from sklearn.metrics import adjusted_rand_score, silhouette_score
+# Load Iris Dataset 
+iris = load_iris()
+X = iris.data[:, :2] # Use only the first two features for 2D visualization 
+y = iris.target	
+# True labels for comparison (not used in clustering)
+# Plotting the Original Data 
+plt.figure(figsize=(12, 5))
+# Original Data 
+plt.subplot(1, 2, 1) 
+plt.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', marker='o', edgecolor='k', s=100)
+plt.title('Original Iris Dataset')
+plt.xlabel('Feature 1') 
+plt.ylabel('Feature 2') 
+plt.grid()
+# K-Means Clustering 
+kmeans = KMeans(n_clusters=3, random_state=42) 
+kmeans.fit(X) 
+predictions = kmeans.predict(X)
+# Evaluation Metrics 
+inertia = kmeans.inertia_ 
+ari = adjusted_rand_score(y, predictions)
+silhouette_avg = silhouette_score(X, predictions)
+print(f"Inertia: {inertia:.2f}") 
+print(f"Adjusted Rand Index (ARI): {ari:.2f}")
+print(f"Silhouette Score: {silhouette_avg:.2f}")
+# Plotting the K-Means Result
+plt.subplot(1, 2, 2) 
+plt.scatter(X[:, 0], X[:, 1], c=predictions, cmap='viridis', marker='o', edgecolor='k', s=100)
+plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], c='red', marker='X', s=200, label='Centroids')
+plt.title('K-Means Clustering Result') 
+plt.xlabel('Feature 1') 
+plt.ylabel('Feature 2') 
+plt.legend()
+plt.grid()
+plt.tight_layout()
+plt.show()

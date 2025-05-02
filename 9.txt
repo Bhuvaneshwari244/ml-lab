@@ -1,0 +1,81 @@
+9. Performance Analysis of Classification Algorithms on a Specific Dataset
+
+Objective
+To compare the performance of multiple classification algorithms on the Iris dataset using cross-validation
+accuracy, classification report, and confusion matrix.
+
+# Import required libraries
+import numpy as np
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.model_selection import cross_val_score
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
+# Load the Iris dataset
+data = load_iris()
+X = data.data
+y = data.target
+# Dictionary to store accuracy results for final comparison
+accuracy_results = {}
+
+
+decision_tree = DecisionTreeClassifier()
+dt_scores = cross_val_score(decision_tree, X, y, cv=5)
+dt_accuracy = dt_scores.mean()
+accuracy_results["Decision Tree"] = dt_accuracy
+decision_tree.fit(X, y)
+dt_y_pred = decision_tree.predict(X)
+print("\nDecision Tree Results:")
+print(f"Cross-Validation Accuracy: {dt_accuracy:.2f}")
+print("Classification Report:\n",
+classification_report(y, dt_y_pred, target_names=data.target_names))
+dt_conf_matrix = confusion_matrix(y, dt_y_pred)
+plt.figure(figsize=(6, 4))
+sns.heatmap(dt_conf_matrix, annot=True, fmt="d", cmap="Blues",
+xticklabels=data.target_names, yticklabels=data.target_names)
+plt.title("Decision Tree - Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
+
+
+knn = KNeighborsClassifier(n_neighbors=3)
+knn_scores = cross_val_score(knn, X, y, cv=5)
+knn_accuracy = knn_scores.mean()
+accuracy_results["K-Nearest Neighbors"] = knn_accuracy
+knn.fit(X, y)
+knn_y_pred = knn.predict(X)
+print("\nK-Nearest Neighbors Results:")
+print(f"Cross-Validation Accuracy: {knn_accuracy:.2f}")
+print("Classification Report:\n",
+classification_report(y, knn_y_pred, target_names=data.target_names))
+knn_conf_matrix = confusion_matrix(y, knn_y_pred)
+plt.figure(figsize=(6, 4))
+sns.heatmap(knn_conf_matrix, annot=True, fmt="d", cmap="Blues",
+xticklabels=data.target_names, yticklabels=data.target_names)
+plt.title("K-Nearest Neighbors - Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
+logistic_regression = LogisticRegression(max_iter=200)
+lr_scores = cross_val_score(logistic_regression, X, y, cv=5)
+lr_accuracy = lr_scores.mean()
+accuracy_results["Logistic Regression"] = lr_accuracy
+logistic_regression.fit(X, y)
+lr_y_pred = logistic_regression.predict(X)
+print("\nLogistic Regression Results:")
+print(f"Cross-Validation Accuracy: {lr_accuracy:.2f}")
+print("Classification Report:\n",
+classification_report(y, lr_y_pred, target_names=data.target_names))
+lr_conf_matrix = confusion_matrix(y, lr_y_pred)
+plt.figure(figsize=(6, 4))
+sns.heatmap(lr_conf_matrix, annot=True, fmt="d", cmap="Blues",
+xticklabels=data.target_names, yticklabels=data.target_names)
+plt.title("Logistic Regression - Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()

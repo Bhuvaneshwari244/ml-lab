@@ -1,0 +1,52 @@
+6. Implementation of KNN using sklearn
+
+# Required Libraries
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import load_iris
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# Load Iris dataset
+iris = load_iris()
+X = iris.data[:, :2]  # Take only the first two features for simplicity
+y = iris.target
+print(iris.DESCR)  # Display dataset description
+
+# Split the dataset into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Initialize KNN model with k=3
+knn = KNeighborsClassifier(n_neighbors=3)
+
+# Train the model
+knn.fit(X_train, y_train)
+
+# Predict on test set
+y_pred = knn.predict(X_test)
+
+# Evaluation Criteria
+accuracy = accuracy_score(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+print(f"Accuracy: {accuracy * 100:.2f}%")
+print("Confusion Matrix:")
+print(conf_matrix)
+
+# Visualization
+plt.figure(figsize=(8, 6))
+plt.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap='coolwarm', marker='*', s=100, label='Training Data')
+plt.scatter(X_test[:, 0], X_test[:, 1], c='green', marker='x', s=200, label='Test Data')
+
+# Draw lines to nearest neighbors for each test point
+for test_point in X_test:
+    distances, indices = knn.kneighbors([test_point])
+    for index in indices[0]:
+        neighbor = X_train[index]
+        plt.plot([test_point[0], neighbor[0]], [test_point[1], neighbor[1]], 'k--', lw=1)
+
+plt.xlabel('Sepal length')
+plt.ylabel('Sepal width')
+plt.title('K-Nearest Neighbors Visualization (Iris Dataset)')
+plt.legend()
+plt.show()
