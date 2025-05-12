@@ -1,0 +1,109 @@
+4. Implementation of Multiple Linear Regression for House
+Price Prediction using sklearn
+# Required Libraries
+import numpy as np
+import pandas as pd
+from sklearn.datasets import fetch_california_housing
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
+# Load Dataset
+house_data = fetch_california_housing()
+x = pd.DataFrame(house_data.data, columns=house_data.feature_names)
+y = pd.Series(house_data.target)
+# Display Dataset Description
+print(house_data.DESCR)
+# Splitting the Dataset
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2,
+random_state=42)
+1
+# Initialize and Train the Model
+model = LinearRegression().fit(X_train, y_train)
+# Make Predictions
+y_pred = model.predict(X_test)
+# Model Evaluation
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+# Output Model Coefficients and Metrics
+print("Model Coefficients:", model.coef_)
+print("Model Intercept:", model.intercept_)
+print("Mean Squared Error:", mse)
+print("R-squared:", r2)
+# Display Actual vs Predicted Values
+comparison = pd.DataFrame({'Actual Price': y_test, 'Predicted Price': y_pred})
+print(comparison.head())
+# Visualization
+plt.figure(figsize=(10, 6))
+plt.scatter(y_test, y_pred, color='blue', edgecolor='k', alpha=0.7)
+plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)],
+color='red', linestyle='--', linewidth=2)
+plt.title('Actual vs Predicted House Prices')
+plt.xlabel('Actual Price')
+plt.ylabel('Predicted Price')
+plt.grid(True)
+plt.show()
+
+OUTPUT:
+
+.. _california_housing_dataset:
+
+California Housing dataset
+--------------------------
+
+**Data Set Characteristics:**
+
+:Number of Instances: 20640
+
+:Number of Attributes: 8 numeric, predictive attributes and the target
+
+:Attribute Information:
+    - MedInc        median income in block group
+    - HouseAge      median house age in block group
+    - AveRooms      average number of rooms per household
+    - AveBedrms     average number of bedrooms per household
+    - Population    block group population
+    - AveOccup      average number of household members
+    - Latitude      block group latitude
+    - Longitude     block group longitude
+
+:Missing Attribute Values: None
+
+This dataset was obtained from the StatLib repository.
+https://www.dcc.fc.up.pt/~ltorgo/Regression/cal_housing.html
+
+The target variable is the median house value for California districts,
+expressed in hundreds of thousands of dollars ($100,000).
+
+This dataset was derived from the 1990 U.S. census, using one row per census
+block group. A block group is the smallest geographical unit for which the U.S.
+Census Bureau publishes sample data (a block group typically has a population
+of 600 to 3,000 people).
+
+A household is a group of people residing within a home. Since the average
+number of rooms and bedrooms in this dataset are provided per household, these
+columns may take surprisingly large values for block groups with few households
+and many empty houses, such as vacation resorts.
+
+It can be downloaded/loaded using the
+:func:`sklearn.datasets.fetch_california_housing` function.
+
+.. rubric:: References
+
+- Pace, R. Kelley and Ronald Barry, Sparse Spatial Autoregressions,
+  Statistics and Probability Letters, 33 (1997) 291-297
+
+Model Coefficients: [ 4.48674910e-01  9.72425752e-03 -1.23323343e-01  7.83144907e-01
+ -2.02962058e-06 -3.52631849e-03 -4.19792487e-01 -4.33708065e-01]
+Model Intercept: -37.023277706064064
+Mean Squared Error: 0.555891598695244
+R-squared: 0.5757877060324511
+       Actual Price  Predicted Price
+20046       0.47700         0.719123
+3024        0.45800         1.764017
+15663       5.00001         2.709659
+20484       2.18600         2.838926
+9814        2.78000         2.604657
+
+ 
+
